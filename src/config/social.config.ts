@@ -19,6 +19,9 @@ export type SocialPlatform = {
   description?: string; // 平台描述（可选）
 };
 
+// 作者名称（用于配置引用）
+const SITE_AUTHOR = "贺平飞"; // 替换为你的名字
+
 /**
  * 社交媒体配置列表
  *
@@ -110,9 +113,6 @@ export const SOCIALS: SocialPlatform[] = [
     description: "订阅博客更新",
   },
 ];
-
-// 导出作者名称（用于其他配置引用）
-const SITE_AUTHOR = "贺平飞"; // 替换为你的名字
 
 /**
  * 获取启用的社交媒体列表
