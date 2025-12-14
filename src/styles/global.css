@@ -1,0 +1,159 @@
+/**
+ * 全局样式文件
+ *
+ * 包含：
+ * 1. Tailwind CSS 基础样式
+ * 2. 自定义 CSS 变量（支持浅色/深色主题）
+ * 3. 基础排版样式
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /**
+   * CSS 变量定义
+   *
+   * 使用 RGB 值定义颜色，支持透明度控制
+   * 格式: rgb(var(--color-name) / <alpha-value>)
+   */
+  :root,
+  html[data-theme="light"] {
+    /* 文字颜色 */
+    --color-text-base: 31, 41, 55; /* gray-800 */
+    --color-accent: 79, 70, 229; /* indigo-600 */
+    --color-fill: 243, 244, 246; /* gray-100 */
+
+    /* 背景颜色 */
+    --color-bg: 255, 255, 255; /* white */
+    --color-bg-secondary: 249, 250, 251; /* gray-50 */
+
+    /* 边框颜色 */
+    --color-border: 229, 231, 235; /* gray-200 */
+
+    /* 代码块颜色 */
+    --color-code-bg: 31, 41, 55; /* gray-800 */
+  }
+
+  html[data-theme="dark"] {
+    /* 文字颜色 */
+    --color-text-base: 229, 231, 235; /* gray-200 */
+    --color-accent: 129, 140, 248; /* indigo-400 */
+    --color-fill: 31, 41, 55; /* gray-800 */
+
+    /* 背景颜色 */
+    --color-bg: 17, 24, 39; /* gray-900 */
+    --color-bg-secondary: 31, 41, 55; /* gray-800 */
+
+    /* 边框颜色 */
+    --color-border: 55, 65, 81; /* gray-700 */
+
+    /* 代码块颜色 */
+    --color-code-bg: 31, 41, 55; /* gray-800 */
+  }
+
+  /**
+   * 基础样式
+   */
+  body {
+    @apply min-h-screen bg-[rgb(var(--color-bg))] text-[rgb(var(--color-text-base))];
+    @apply font-sans antialiased;
+  }
+
+  /**
+   * 链接样式
+   */
+  a {
+    @apply outline-2 outline-offset-2 outline-skin-accent;
+    @apply transition-colors duration-200;
+  }
+
+  /**
+   * 标题样式
+   */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold text-[rgb(var(--color-text-base))];
+  }
+
+  /**
+   * 代码块样式
+   */
+  pre {
+    @apply overflow-x-auto rounded-lg border border-[rgb(var(--color-border))];
+  }
+
+  code {
+    @apply rounded bg-[rgb(var(--color-fill))] px-1.5 py-0.5 font-mono text-sm;
+  }
+
+  pre code {
+    @apply bg-transparent p-0;
+  }
+
+  /**
+   * 滚动条样式
+   */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-[rgb(var(--color-bg-secondary))];
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-[rgb(var(--color-border))];
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-[rgb(var(--color-accent))];
+  }
+
+  /**
+   * 选中文本样式
+   */
+  ::selection {
+    @apply bg-[rgb(var(--color-accent)/0.2)];
+  }
+}
+
+@layer components {
+  /**
+   * 自定义组件样式
+   */
+  .prose {
+    @apply max-w-none;
+  }
+
+  .prose a {
+    @apply text-[rgb(var(--color-accent))] no-underline hover:underline;
+  }
+
+  /**
+   * 按钮样式
+   */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2;
+    @apply font-medium transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply bg-[rgb(var(--color-accent))] text-white;
+    @apply hover:bg-[rgb(var(--color-accent)/0.9)];
+    @apply focus:ring-[rgb(var(--color-accent))];
+  }
+
+  .btn-secondary {
+    @apply border border-[rgb(var(--color-border))] bg-transparent;
+    @apply text-[rgb(var(--color-text-base))];
+    @apply hover:bg-[rgb(var(--color-fill))];
+    @apply focus:ring-[rgb(var(--color-accent))];
+  }
+}

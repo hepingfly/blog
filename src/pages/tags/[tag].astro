@@ -1,0 +1,193 @@
+---
+/**
+ * 动态标签页面
+ *
+ * 显示特定标签下的所有文章
+ */
+
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import getPostsByTag from "@/utils/getPostsByTag";
+import getSortedPosts from "@/utils/getSortedPosts";
+import formatDate from "@/utils/formatDate";
+
+// 生成所有标签的路径
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  const sortedPosts = getSortedPosts(posts);
+
+  // 获取所有唯一标签
+  const tags = new Set<string>();
+  sortedPosts.forEach((post) => {
+    post.data.tags.forEach((tag) => tags.add(tag));
+  });
+
+  return Array.from(tags).map((tag) => ({
+    params: { tag },
+    props: { tag },
+  }));
+}
+
+const { tag } = Astro.props;
+
+// 获取该标签下的所有文章
+const allPosts = await getCollection("blog");
+const tagPosts = getPostsByTag(allPosts, tag);
+---
+
+<BaseLayout title={`标签: ${tag}`} description={`带有"${tag}"标签的文章`}>
+  <div class="tag-page-container">
+    <!-- 页面头部 -->
+    <header class="tag-page-header">
+      <a href="/tags" class="back-link">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        <span>返回标签列表</span>
+      </a>
+
+      <h1 class="tag-page-title">
+        <span class="tag-symbol">#</span>{tag}
+      </h1>
+      <p class="tag-page-count">共 {tagPosts.length} 篇文章</p>
+    </header>
+
+    <!-- 文章列表 -->
+    <div class="posts-list">
+      {
+        tagPosts.map((post) => (
+          <article class="post-item">
+            <a href={`/blog/${post.slug}`} class="post-item-link">
+              <div class="post-item-content">
+                <h2 class="post-item-title">{post.data.title}</h2>
+                <p class="post-item-description">{post.data.description}</p>
+
+                <div class="post-item-meta">
+                  <time datetime={post.data.pubDatetime.toISOString()}>
+                    {formatDate(post.data.pubDatetime)}
+                  </time>
+
+                  <span class="post-item-author">by {post.data.author}</span>
+                </div>
+              </div>
+            </a>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .tag-page-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  /* 页面头部 */
+  .tag-page-header {
+    padding: 3rem 0 2rem;
+    text-align: center;
+    border-bottom: 1px solid rgb(var(--color-border));
+    margin-bottom: 3rem;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgb(var(--color-accent));
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    transition: all 0.2s ease;
+  }
+
+  .back-link:hover {
+    gap: 0.75rem;
+  }
+
+  .back-link svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .tag-page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .tag-symbol {
+    color: rgb(var(--color-accent));
+  }
+
+  .tag-page-count {
+    font-size: 0.875rem;
+    color: rgb(var(--color-text-base) / 0.6);
+  }
+
+  /* 文章列表 */
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .post-item {
+    padding: 1.5rem;
+    border: 1px solid rgb(var(--color-border));
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+    background: rgb(var(--color-bg));
+  }
+
+  .post-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: rgb(var(--color-accent));
+  }
+
+  .post-item-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .post-item-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: rgb(var(--color-text-base));
+    transition: color 0.2s ease;
+  }
+
+  .post-item-link:hover .post-item-title {
+    color: rgb(var(--color-accent));
+  }
+
+  .post-item-description {
+    color: rgb(var(--color-text-base) / 0.7);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .post-item-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: rgb(var(--color-text-base) / 0.6);
+  }
+
+  @media (max-width: 768px) {
+    .tag-page-title {
+      font-size: 2rem;
+    }
+  }
+</style>

@@ -1,0 +1,354 @@
+---
+/**
+ * 打赏/赞赏组件
+ *
+ * 功能：
+ * 1. 显示一个"赞赏支持"按钮
+ * 2. 点击按钮弹出 Modal 显示微信和支付宝二维码
+ * 3. 使用占位图片，后期只需替换图片即可
+ * 4. 纯前端实现，无需后端支持
+ * 5. 不影响 SEO 和页面性能
+ *
+ * 占位图片路径：
+ * - /src/assets/donate-qrcodes/wechat.png (微信赞赏码)
+ * - /src/assets/donate-qrcodes/alipay.png (支付宝收款码)
+ *
+ * 更新二维码方法：
+ * 直接替换上述路径的图片文件即可，无需修改代码
+ */
+
+// 导入占位图片（如果图片不存在，将使用 fallback）
+// 后期替换为真实二维码时，只需替换图片文件
+const wechatQRCode = "/donate-qrcodes/wechat.png";
+const alipayQRCode = "/donate-qrcodes/alipay.png";
+---
+
+<div class="donate-wrapper">
+  <!-- 赞赏按钮 -->
+  <button
+    id="donate-btn"
+    class="btn btn-primary donate-btn"
+    aria-label="赞赏支持"
+    title="如果这篇文章对你有帮助，欢迎赞赏支持"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-5 w-5 mr-2"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+      ></path>
+    </svg>
+    <span>赞赏支持</span>
+  </button>
+
+  <!-- Modal 弹窗 -->
+  <div id="donate-modal" class="donate-modal" role="dialog" aria-labelledby="donate-modal-title" aria-hidden="true">
+    <div class="donate-modal-backdrop" id="donate-modal-backdrop"></div>
+    <div class="donate-modal-content">
+      <!-- 关闭按钮 -->
+      <button
+        id="donate-close-btn"
+        class="donate-modal-close"
+        aria-label="关闭"
+        title="关闭"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
+        </svg>
+      </button>
+
+      <!-- 标题 -->
+      <h3 id="donate-modal-title" class="donate-modal-title">
+        感谢您的支持 🙏
+      </h3>
+      <p class="donate-modal-subtitle">
+        如果这篇文章对你有帮助，欢迎通过以下方式赞赏支持
+      </p>
+
+      <!-- 二维码展示区 -->
+      <div class="donate-qrcode-container">
+        <!-- 微信赞赏码 -->
+        <div class="donate-qrcode-item">
+          <div class="donate-qrcode-box">
+            <img
+              src={wechatQRCode}
+              alt="微信赞赏码"
+              loading="lazy"
+              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect width=%22200%22 height=%22200%22 fill=%22%23f3f4f6%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2214%22 fill=%22%236b7280%22%3E微信二维码%3C/text%3E%3C/svg%3E'"
+            />
+          </div>
+          <div class="donate-qrcode-label">
+            <svg class="donate-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+              <path fill="#07c160" d="M664.250054 368.541681c10.015098 0 19.892049 0.732687 29.67281 1.795902-26.647917-122.810047-159.358451-214.077703-310.826188-214.077703-169.353083 0-308.085774 114.232694-308.085774 259.274068 0 83.708494 46.165436 152.460344 123.281791 205.78483l-30.80868 91.730191 107.688651-53.455469c38.558178 7.53665 69.459978 15.308661 107.924012 15.308661 9.66308 0 19.230993-0.470721 28.752858-1.225921-6.025227-20.36584-9.521864-41.723264-9.521864-63.862493C402.328693 476.632491 517.908058 368.541681 664.250054 368.541681zM498.62897 285.87389c23.200398 0 38.557154 15.120372 38.557154 38.061874 0 22.846334-15.356756 38.156018-38.557154 38.156018-23.107277 0-46.260603-15.309684-46.260603-38.156018C452.368366 300.994262 475.522716 285.87389 498.62897 285.87389zM283.016307 362.091782c-23.107277 0-46.402843-15.309684-46.402843-38.156018 0-22.941502 23.295566-38.061874 46.402843-38.061874 23.081695 0 38.46301 15.120372 38.46301 38.061874C321.479317 346.782098 306.098002 362.091782 283.016307 362.091782zM945.448458 606.151333c0-121.888048-123.258255-221.236753-261.683954-221.236753-146.57838 0-262.015505 99.348706-262.015505 221.236753 0 122.06508 115.437126 221.200938 262.015505 221.200938 30.66644 0 61.617359-7.609305 92.423993-15.262612l84.513836 45.786813-23.178909-76.17082C899.379213 735.776599 945.448458 674.90216 945.448458 606.151333zM598.803483 567.994292c-15.332197 0-30.807656-15.096836-30.807656-30.501688 0-15.190981 15.47546-30.477129 30.807656-30.477129 23.295566 0 38.558178 15.286148 38.558178 30.477129C637.361661 552.897456 622.099049 567.994292 598.803483 567.994292zM768.25071 567.994292c-15.213493 0-30.594809-15.096836-30.594809-30.501688 0-15.190981 15.381315-30.477129 30.594809-30.477129 23.107277 0 38.558178 15.286148 38.558178 30.477129C806.808888 552.897456 791.357987 567.994292 768.25071 567.994292z"/>
+            </svg>
+            <span>微信赞赏</span>
+          </div>
+        </div>
+
+        <!-- 支付宝收款码 -->
+        <div class="donate-qrcode-item">
+          <div class="donate-qrcode-box">
+            <img
+              src={alipayQRCode}
+              alt="支付宝收款码"
+              loading="lazy"
+              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect width=%22200%22 height=%22200%22 fill=%22%23f3f4f6%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22sans-serif%22 font-size=%2214%22 fill=%22%236b7280%22%3E支付宝二维码%3C/text%3E%3C/svg%3E'"
+            />
+          </div>
+          <div class="donate-qrcode-label">
+            <svg class="donate-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+              <path fill="#1677ff" d="M1023.795646 701.966043V195.361095C1023.795646 87.833677 938.238806 0.691866 831.935031 0.691866H192.246536C85.851341 0.691866 0.295524 87.833677 0.295524 195.361095v633.276356c0 107.619235 85.555817 194.761047 192.042828 194.761047h639.597089c106.395195 0 191.859196-87.141812 191.859196-194.761047V807.601213c-37.251789 15.912714-106.66778 42.610823-192.042828 71.084308-236.076208 78.744191-378.360633 8.956357-513.293069-55.171594-59.845163-28.473485-164.385016-78.744191-243.945025-119.354956v124.642769c0 72.400125 59.02658 131.335888 131.335888 131.335888h639.597089c72.400125 0 131.335888-58.935763 131.335888-131.335888V782.310684c-31.837421 12.960979-64.492476 25.012774-97.147531 36.156386z m0-232.894757v-74.988006c-88.00924 35.429814-335.931625 131.335888-434.206496 164.885832a8370.837235 8370.837235 0 0 1-128.292152 44.61582c-172.524742 55.989228-303.184021 30.107937-424.205466-24.104591-46.844552-21.060856-134.104915-63.220844-164.885832-81.152795V195.361095c0-72.400125 59.02658-131.335888 131.335888-131.335888h639.597089c72.400125 0 131.335888 58.935763 131.335888 131.335888v430.932928c42.701639 16.730347 76.803951 30.562305 115.081138 44.625819 62.492111 22.832488 134.892236 16.730347 186.48394-17.275164zM223.357412 345.616178h447.622292v60.754346H223.357412z m0 131.335888h298.354248v60.753323H223.357412z m525.272852 131.335888c-42.610823-15.821898-130.517819-50.469027-247.262472-93.809381-2.682663-1.043116-5.364303-2.086233-8.137759-3.22053-117.471225-43.25217-175.388588-64.312999-206.498377-75.081822a1133.036997 1133.036997 0 0 0-54.491662-17.730981c-67.629322-18.5647-131.335888 24.104591-142.013894 95.348451-10.586168 70.789492 38.659973 136.982688 106.289295 147.568856 23.193953 3.63811 46.659043 2.047846 68.491815-3.909293 57.190791-15.821898 199.383401-67.083506 336.84344-117.471225 131.881704-48.236732 250.580951-93.080933 302.809461-113.233575z"/>
+            </svg>
+            <span>支付宝赞赏</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="donate-modal-footer">
+        您的支持是我持续创作的动力 ❤️
+      </p>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* 打赏按钮样式 */
+  .donate-wrapper {
+    margin: 3rem 0;
+    text-align: center;
+  }
+
+  .donate-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .donate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  }
+
+  /* Modal 样式 */
+  .donate-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .donate-modal.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  .donate-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  .donate-modal-content {
+    position: relative;
+    background: rgb(var(--color-bg));
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    animation: modalSlideIn 0.3s ease;
+  }
+
+  @keyframes modalSlideIn {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .donate-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: rgb(var(--color-text-base));
+    transition: all 0.2s ease;
+    border-radius: 0.5rem;
+  }
+
+  .donate-modal-close:hover {
+    background: rgb(var(--color-fill));
+    transform: rotate(90deg);
+  }
+
+  .donate-modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+
+  .donate-modal-subtitle {
+    color: rgb(var(--color-text-base) / 0.7);
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .donate-modal-footer {
+    color: rgb(var(--color-text-base) / 0.6);
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.875rem;
+  }
+
+  /* 二维码容器 */
+  .donate-qrcode-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+
+  .donate-qrcode-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .donate-qrcode-box {
+    width: 200px;
+    height: 200px;
+    border: 2px solid rgb(var(--color-border));
+    border-radius: 0.75rem;
+    padding: 0.5rem;
+    background: rgb(var(--color-bg-secondary));
+    transition: all 0.3s ease;
+  }
+
+  .donate-qrcode-box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .donate-qrcode-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 0.5rem;
+  }
+
+  .donate-qrcode-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .donate-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* 响应式调整 */
+  @media (max-width: 640px) {
+    .donate-modal-content {
+      padding: 1.5rem;
+    }
+
+    .donate-qrcode-container {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .donate-qrcode-box {
+      width: 180px;
+      height: 180px;
+    }
+  }
+</style>
+
+<script>
+  // Modal 交互逻辑
+  function initDonateModal() {
+    const donateBtn = document.getElementById("donate-btn");
+    const modal = document.getElementById("donate-modal");
+    const closeBtn = document.getElementById("donate-close-btn");
+    const backdrop = document.getElementById("donate-modal-backdrop");
+
+    if (!donateBtn || !modal || !closeBtn || !backdrop) return;
+
+    // 打开 Modal
+    function openModal() {
+      modal.classList.add("active");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+
+    // 关闭 Modal
+    function closeModal() {
+      modal.classList.remove("active");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    }
+
+    // 事件监听
+    donateBtn.addEventListener("click", openModal);
+    closeBtn.addEventListener("click", closeModal);
+    backdrop.addEventListener("click", closeModal);
+
+    // ESC 键关闭
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("active")) {
+        closeModal();
+      }
+    });
+  }
+
+  // 初始化
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initDonateModal);
+  } else {
+    initDonateModal();
+  }
+
+  // 支持 Astro View Transitions
+  document.addEventListener("astro:page-load", initDonateModal);
+</script>

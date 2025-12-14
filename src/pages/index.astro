@@ -1,0 +1,328 @@
+---
+/**
+ * 首页
+ *
+ * 功能：
+ * 1. 欢迎信息
+ * 2. 最新文章列表
+ * 3. 精选文章
+ * 4. 社交媒体入口
+ */
+
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import JsonLD from "@/components/JsonLD.astro";
+import Socials from "@/components/Socials.astro";
+import { SITE } from "@/config/site.config";
+import { generateWebsiteSchema } from "@/config/seo.config";
+import getSortedPosts from "@/utils/getSortedPosts";
+import formatDate from "@/utils/formatDate";
+
+// 获取所有文章
+const posts = await getCollection("blog");
+const sortedPosts = getSortedPosts(posts);
+
+// 最新文章（前 5 篇）
+const recentPosts = sortedPosts.slice(0, 5);
+
+// 精选文章
+const featuredPosts = sortedPosts.filter((post) => post.data.featured);
+
+// 生成 JSON-LD Schema
+const schema = generateWebsiteSchema();
+---
+
+<BaseLayout>
+  <JsonLD schema={schema} slot="head" />
+
+  <div class="home-container">
+    <!-- Hero Section -->
+    <section class="hero">
+      <h1 class="hero-title">
+        你好，我是 <span class="hero-name">{SITE.author}</span>
+      </h1>
+      <p class="hero-description">
+        {SITE.desc}
+      </p>
+
+      <!-- 社交媒体 -->
+      <div class="hero-socials">
+        <Socials centered size="lg" />
+      </div>
+
+      <div class="hero-cta">
+        <a href="/blog" class="btn btn-primary">阅读文章</a>
+        <a href="/about" class="btn btn-secondary">关于我</a>
+      </div>
+    </section>
+
+    <!-- 精选文章 -->
+    {
+      featuredPosts.length > 0 && (
+        <section class="section">
+          <h2 class="section-title">精选文章</h2>
+          <div class="posts-grid">
+            {featuredPosts.slice(0, 3).map((post) => (
+              <article class="post-card featured">
+                <a href={`/blog/${post.slug}`} class="post-card-link">
+                  <div class="post-card-content">
+                    <h3 class="post-card-title">{post.data.title}</h3>
+                    <p class="post-card-description">{post.data.description}</p>
+                    <div class="post-card-meta">
+                      <time datetime={post.data.pubDatetime.toISOString()}>
+                        {formatDate(post.data.pubDatetime)}
+                      </time>
+                      {post.data.tags.length > 0 && (
+                        <span class="post-card-tags">
+                          {post.data.tags.slice(0, 2).map((tag) => (
+                            <span class="post-card-tag">#{tag}</span>
+                          ))}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </a>
+              </article>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- 最新文章 -->
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">最新文章</h2>
+        <a href="/blog" class="section-link">查看全部 →</a>
+      </div>
+
+      <div class="posts-list">
+        {
+          recentPosts.map((post) => (
+            <article class="post-item">
+              <a href={`/blog/${post.slug}`} class="post-item-link">
+                <div class="post-item-content">
+                  <h3 class="post-item-title">{post.data.title}</h3>
+                  <p class="post-item-description">{post.data.description}</p>
+                </div>
+                <div class="post-item-meta">
+                  <time datetime={post.data.pubDatetime.toISOString()}>
+                    {formatDate(post.data.pubDatetime)}
+                  </time>
+                </div>
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .home-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  /* Hero Section */
+  .hero {
+    padding: 4rem 0;
+    text-align: center;
+  }
+
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+  }
+
+  .hero-name {
+    color: rgb(var(--color-accent));
+  }
+
+  .hero-description {
+    font-size: 1.25rem;
+    color: rgb(var(--color-text-base) / 0.8);
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-socials {
+    margin: 2rem 0;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2rem;
+    }
+
+    .hero-description {
+      font-size: 1rem;
+    }
+  }
+
+  /* Section */
+  .section {
+    margin: 4rem 0;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .section-link {
+    color: rgb(var(--color-accent));
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .section-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Posts Grid (精选文章) */
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .post-card {
+    border: 1px solid rgb(var(--color-border));
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background: rgb(var(--color-bg));
+  }
+
+  .post-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    border-color: rgb(var(--color-accent));
+  }
+
+  .post-card.featured {
+    border-color: rgb(var(--color-accent));
+    background: linear-gradient(135deg, rgb(var(--color-bg)) 0%, rgb(var(--color-fill)) 100%);
+  }
+
+  .post-card-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .post-card-content {
+    padding: 1.5rem;
+  }
+
+  .post-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: rgb(var(--color-text-base));
+  }
+
+  .post-card-description {
+    color: rgb(var(--color-text-base) / 0.7);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .post-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+    color: rgb(var(--color-text-base) / 0.6);
+  }
+
+  .post-card-tags {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .post-card-tag {
+    color: rgb(var(--color-accent));
+  }
+
+  /* Posts List (最新文章) */
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .post-item {
+    border-bottom: 1px solid rgb(var(--color-border));
+    padding-bottom: 1.5rem;
+  }
+
+  .post-item:last-child {
+    border-bottom: none;
+  }
+
+  .post-item-link {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+  }
+
+  .post-item-link:hover .post-item-title {
+    color: rgb(var(--color-accent));
+  }
+
+  .post-item-content {
+    flex: 1;
+  }
+
+  .post-item-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    transition: color 0.2s ease;
+  }
+
+  .post-item-description {
+    color: rgb(var(--color-text-base) / 0.7);
+    line-height: 1.6;
+  }
+
+  .post-item-meta {
+    flex-shrink: 0;
+    font-size: 0.875rem;
+    color: rgb(var(--color-text-base) / 0.6);
+  }
+
+  @media (max-width: 768px) {
+    .post-item-link {
+      flex-direction: column;
+    }
+
+    .post-item-meta {
+      align-self: flex-start;
+    }
+  }
+</style>

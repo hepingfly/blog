@@ -1,0 +1,361 @@
+---
+/**
+ * Header 组件
+ *
+ * 包含：
+ * 1. 网站标题/Logo
+ * 2. 导航菜单
+ * 3. 主题切换按钮
+ * 4. 响应式菜单
+ */
+
+import { SITE } from "@/config/site.config";
+
+const currentPath = Astro.url.pathname;
+
+const navItems = [
+  { name: "首页", href: "/" },
+  { name: "博客", href: "/blog" },
+  { name: "标签", href: "/tags" },
+  { name: "关于", href: "/about" },
+];
+---
+
+<header class="header">
+  <div class="header-container">
+    <div class="header-content">
+      <!-- Logo / 网站标题 -->
+      <a href="/" class="logo" aria-label="回到首页">
+        <span class="logo-text">{SITE.title}</span>
+      </a>
+
+      <!-- 导航菜单 -->
+      <nav class="nav" aria-label="主导航">
+        <ul class="nav-list">
+          {
+            navItems.map((item) => {
+              const isActive = currentPath === item.href || currentPath.startsWith(item.href + "/");
+              return (
+                <li>
+                  <a href={item.href} class:list={["nav-link", { active: isActive }]} aria-current={isActive ? "page" : undefined}>
+                    {item.name}
+                  </a>
+                </li>
+              );
+            })
+          }
+        </ul>
+      </nav>
+
+      <!-- 右侧操作区 -->
+      <div class="header-actions">
+        <!-- 主题切换按钮 -->
+        <button
+          id="theme-toggle"
+          class="theme-toggle"
+          aria-label="切换主题"
+          title="切换浅色/深色主题"
+        >
+          <svg class="sun-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+            ></path>
+          </svg>
+          <svg class="moon-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+            ></path>
+          </svg>
+        </button>
+
+        <!-- 移动端菜单按钮 -->
+        <button
+          id="mobile-menu-toggle"
+          class="mobile-menu-toggle"
+          aria-label="打开菜单"
+          aria-expanded="false"
+        >
+          <svg class="menu-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            ></path>
+          </svg>
+          <svg class="close-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 移动端菜单 -->
+    <div id="mobile-menu" class="mobile-menu" hidden>
+      <nav aria-label="移动端导航">
+        <ul class="mobile-nav-list">
+          {
+            navItems.map((item) => {
+              const isActive = currentPath === item.href || currentPath.startsWith(item.href + "/");
+              return (
+                <li>
+                  <a href={item.href} class:list={["mobile-nav-link", { active: isActive }]}>
+                    {item.name}
+                  </a>
+                </li>
+              );
+            })
+          }
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(var(--color-bg) / 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgb(var(--color-border));
+  }
+
+  .header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 4rem;
+  }
+
+  /* Logo */
+  .logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: rgb(var(--color-text-base));
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .logo:hover {
+    color: rgb(var(--color-accent));
+  }
+
+  /* 导航 */
+  .nav {
+    display: none;
+  }
+
+  .nav-list {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-link {
+    color: rgb(var(--color-text-base));
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 0;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+  }
+
+  .nav-link:hover {
+    color: rgb(var(--color-accent));
+  }
+
+  .nav-link.active {
+    color: rgb(var(--color-accent));
+    border-bottom-color: rgb(var(--color-accent));
+  }
+
+  @media (min-width: 768px) {
+    .nav {
+      display: block;
+    }
+  }
+
+  /* Header Actions */
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* 主题切换按钮 */
+  .theme-toggle {
+    position: relative;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.5rem;
+    border: none;
+    background: transparent;
+    color: rgb(var(--color-text-base));
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .theme-toggle:hover {
+    background: rgb(var(--color-fill));
+  }
+
+  .theme-toggle svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.2s ease;
+  }
+
+  .sun-icon {
+    opacity: 0;
+  }
+
+  .moon-icon {
+    opacity: 1;
+  }
+
+  [data-theme="dark"] .sun-icon {
+    opacity: 1;
+  }
+
+  [data-theme="dark"] .moon-icon {
+    opacity: 0;
+  }
+
+  /* 移动端菜单按钮 */
+  .mobile-menu-toggle {
+    position: relative;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.5rem;
+    border: none;
+    background: transparent;
+    color: rgb(var(--color-text-base));
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-menu-toggle:hover {
+    background: rgb(var(--color-fill));
+  }
+
+  .mobile-menu-toggle svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.2s ease;
+  }
+
+  .close-icon {
+    opacity: 0;
+  }
+
+  .mobile-menu-toggle[aria-expanded="true"] .menu-icon {
+    opacity: 0;
+  }
+
+  .mobile-menu-toggle[aria-expanded="true"] .close-icon {
+    opacity: 1;
+  }
+
+  @media (min-width: 768px) {
+    .mobile-menu-toggle {
+      display: none;
+    }
+  }
+
+  /* 移动端菜单 */
+  .mobile-menu {
+    padding: 1rem 0;
+    border-top: 1px solid rgb(var(--color-border));
+  }
+
+  .mobile-nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .mobile-nav-link {
+    display: block;
+    padding: 0.75rem 0;
+    color: rgb(var(--color-text-base));
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+
+  .mobile-nav-link:hover,
+  .mobile-nav-link.active {
+    color: rgb(var(--color-accent));
+  }
+
+  @media (min-width: 768px) {
+    .mobile-menu {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  function initMobileMenu() {
+    const toggle = document.getElementById("mobile-menu-toggle");
+    const menu = document.getElementById("mobile-menu");
+
+    if (!toggle || !menu) return;
+
+    toggle.addEventListener("click", () => {
+      const isExpanded = toggle.getAttribute("aria-expanded") === "true";
+      toggle.setAttribute("aria-expanded", (!isExpanded).toString());
+      menu.hidden = isExpanded;
+    });
+
+    // 点击链接后关闭菜单
+    const links = menu.querySelectorAll("a");
+    links.forEach((link) => {
+      link.addEventListener("click", () => {
+        toggle.setAttribute("aria-expanded", "false");
+        menu.hidden = true;
+      });
+    });
+  }
+
+  // 初始化
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMobileMenu);
+  } else {
+    initMobileMenu();
+  }
+
+  // 支持 Astro View Transitions
+  document.addEventListener("astro:page-load", initMobileMenu);
+</script>

@@ -1,0 +1,18 @@
+---
+/**
+ * JSON-LD 结构化数据组件
+ *
+ * 用于插入 Schema.org 结构化数据，提升 SEO
+ *
+ * 使用方法：
+ * <JsonLD schema={schemaObject} />
+ */
+
+export interface Props {
+  schema: Record<string, any>;
+}
+
+const { schema } = Astro.props;
+---
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />

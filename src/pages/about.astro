@@ -1,0 +1,374 @@
+---
+/**
+ * 关于页面
+ *
+ * 展示：
+ * 1. 个人简介
+ * 2. 完整的社交媒体列表（带描述）
+ * 3. 联系方式
+ */
+
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { SITE } from "@/config/site.config";
+import { getActiveSocials } from "@/config/social.config";
+import SocialIcon from "@/components/SocialIcon.astro";
+
+const socials = getActiveSocials();
+---
+
+<BaseLayout title="关于我" description={`关于 ${SITE.author}`}>
+  <div class="about-container">
+    <!-- 个人简介区域 -->
+    <section class="about-intro">
+      <h1 class="about-title">关于我</h1>
+
+      <div class="about-content">
+        <p>
+          你好，我是 <strong>{SITE.author}</strong>。
+        </p>
+
+        <p>
+          这是我的个人博客，我在这里分享关于技术、编程、思考和成长的内容。
+        </p>
+
+        <p>
+          我相信通过写作可以更好地整理思路、深化理解，同时也希望我的文章能够帮助到其他人。
+        </p>
+
+        <!-- 在这里添加你的个人介绍 -->
+        <p>
+          我的技术栈主要包括：
+        </p>
+        <ul>
+          <li>前端：JavaScript/TypeScript, React, Vue, Astro</li>
+          <li>后端：Node.js, Python, Java</li>
+          <li>工具：Git, Docker, Linux</li>
+        </ul>
+
+        <p>
+          除了技术，我也关注：
+        </p>
+        <ul>
+          <li>个人成长与效率提升</li>
+          <li>开源软件与技术社区</li>
+          <li>产品设计与用户体验</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 社交媒体区域 -->
+    <section class="about-socials">
+      <h2 class="section-title">在这里找到我</h2>
+      <p class="section-description">
+        欢迎通过以下平台与我交流和联系
+      </p>
+
+      <div class="socials-grid">
+        {
+          socials.map((social) => (
+            <a
+              href={social.href}
+              target={social.name !== "RSS" ? "_blank" : undefined}
+              rel={social.name !== "RSS" ? "noopener noreferrer" : undefined}
+              class="social-card"
+            >
+              <div class="social-card-icon">
+                <SocialIcon name={social.name} size="lg" />
+              </div>
+              <div class="social-card-content">
+                <h3 class="social-card-title">{social.name}</h3>
+                {social.display && <p class="social-card-handle">{social.display}</p>}
+                {social.description && <p class="social-card-description">{social.description}</p>}
+              </div>
+              <div class="social-card-arrow">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 联系方式区域 -->
+    <section class="about-contact">
+      <h2 class="section-title">联系我</h2>
+      <p class="section-description">
+        如果你有任何问题、建议或合作意向，欢迎通过以下方式联系我：
+      </p>
+
+      <div class="contact-info">
+        <div class="contact-item">
+          <svg class="contact-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+            ></path>
+          </svg>
+          <div>
+            <h3 class="contact-title">Email</h3>
+            <a href="mailto:your@email.com" class="contact-link">
+              your@email.com
+            </a>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <svg class="contact-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+            ></path>
+          </svg>
+          <div>
+            <h3 class="contact-title">网站</h3>
+            <a href={SITE.website} class="contact-link" target="_blank" rel="noopener noreferrer">
+              {SITE.website}
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 博客信息 -->
+    <section class="about-blog">
+      <h2 class="section-title">关于本站</h2>
+      <div class="blog-info">
+        <p>
+          本站使用 <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> 构建，
+          部署在 GitHub Pages 上。
+        </p>
+        <p>
+          所有文章内容采用
+          <a
+            href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            CC BY-NC-SA 4.0
+          </a>
+          许可协议，欢迎在遵守协议的前提下转载分享。
+        </p>
+        <p>
+          如果你喜欢这个博客，可以通过文章底部的打赏功能支持我 ❤️
+        </p>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .about-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  /* 个人简介 */
+  .about-intro {
+    padding: 3rem 0;
+  }
+
+  .about-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .about-content {
+    line-height: 1.8;
+    font-size: 1.0625rem;
+  }
+
+  .about-content p {
+    margin: 1.25rem 0;
+  }
+
+  .about-content strong {
+    color: rgb(var(--color-accent));
+    font-weight: 600;
+  }
+
+  .about-content ul {
+    margin: 1rem 0;
+    padding-left: 2rem;
+  }
+
+  .about-content li {
+    margin: 0.5rem 0;
+  }
+
+  /* Section */
+  section {
+    padding: 3rem 0;
+    border-top: 1px solid rgb(var(--color-border));
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .section-description {
+    text-align: center;
+    color: rgb(var(--color-text-base) / 0.7);
+    margin-bottom: 2rem;
+  }
+
+  /* 社交媒体网格 */
+  .socials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .social-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    border: 1px solid rgb(var(--color-border));
+    border-radius: 0.75rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    background: rgb(var(--color-bg));
+  }
+
+  .social-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-color: rgb(var(--color-accent));
+  }
+
+  .social-card-icon {
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(var(--color-fill));
+    border-radius: 0.5rem;
+  }
+
+  .social-card-content {
+    flex: 1;
+  }
+
+  .social-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .social-card-handle {
+    font-size: 0.875rem;
+    color: rgb(var(--color-accent));
+    margin-bottom: 0.25rem;
+  }
+
+  .social-card-description {
+    font-size: 0.875rem;
+    color: rgb(var(--color-text-base) / 0.7);
+    line-height: 1.4;
+  }
+
+  .social-card-arrow {
+    flex-shrink: 0;
+    color: rgb(var(--color-text-base) / 0.4);
+    transition: all 0.2s ease;
+  }
+
+  .social-card:hover .social-card-arrow {
+    color: rgb(var(--color-accent));
+    transform: translateX(4px);
+  }
+
+  .social-card-arrow svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  /* 联系方式 */
+  .contact-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .contact-item {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .contact-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    color: rgb(var(--color-accent));
+  }
+
+  .contact-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .contact-link {
+    color: rgb(var(--color-accent));
+    text-decoration: none;
+  }
+
+  .contact-link:hover {
+    text-decoration: underline;
+  }
+
+  /* 博客信息 */
+  .blog-info {
+    line-height: 1.8;
+    color: rgb(var(--color-text-base) / 0.8);
+  }
+
+  .blog-info p {
+    margin: 1rem 0;
+  }
+
+  .blog-info a {
+    color: rgb(var(--color-accent));
+    text-decoration: none;
+  }
+
+  .blog-info a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .about-title {
+      font-size: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+    }
+
+    .socials-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

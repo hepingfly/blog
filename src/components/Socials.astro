@@ -1,0 +1,89 @@
+---
+/**
+ * 社交媒体链接组件
+ *
+ * 功能：
+ * 1. 自动读取 social.config.ts 中启用的社交媒体
+ * 2. 显示为图标列表
+ * 3. 支持在 Header、Footer、About 等多个位置使用
+ *
+ * Props:
+ * - centered: 是否居中显示 (默认: false)
+ * - showLabel: 是否显示文字标签 (默认: false)
+ * - size: 图标大小 'sm' | 'md' | 'lg' (默认: 'md')
+ */
+
+import { getActiveSocials } from "@/config/social.config";
+import SocialIcon from "./SocialIcon.astro";
+
+export interface Props {
+  centered?: boolean;
+  showLabel?: boolean;
+  size?: "sm" | "md" | "lg";
+}
+
+const { centered = false, showLabel = false, size = "md" } = Astro.props;
+
+const socials = getActiveSocials();
+
+const sizeClasses = {
+  sm: "gap-2",
+  md: "gap-3",
+  lg: "gap-4",
+};
+---
+
+<ul
+  class:list={[
+    "socials-list flex flex-wrap items-center",
+    sizeClasses[size],
+    { "justify-center": centered },
+  ]}
+>
+  {
+    socials.map((social) => (
+      <li>
+        <a
+          href={social.href}
+          target={social.name !== "RSS" ? "_blank" : undefined}
+          rel={social.name !== "RSS" ? "noopener noreferrer" : undefined}
+          class="social-link"
+          title={social.linkTitle}
+          aria-label={social.linkTitle}
+        >
+          <SocialIcon name={social.name} size={size} />
+          {showLabel && <span class="social-label">{social.display || social.name}</span>}
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .socials-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    color: rgb(var(--color-text-base));
+    transition: all 0.2s ease;
+  }
+
+  .social-link:hover {
+    color: rgb(var(--color-accent));
+    background: rgb(var(--color-fill));
+    transform: translateY(-2px);
+  }
+
+  .social-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+</style>
