@@ -35,9 +35,7 @@ export default defineConfig({
 
   // 集成配置
   integrations: [
-    tailwind({
-      applyBaseStyles: false,
-    }),
+    tailwind(),
     mdx(),
     sitemap(),
   ],
