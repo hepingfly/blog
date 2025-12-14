@@ -1,0 +1,344 @@
+---
+/**
+ * 文章布局
+ *
+ * 功能：
+ * 1. 显示文章元信息（标题、日期、作者、标签）
+ * 2. 渲染文章内容
+ * 3. 自动插入打赏组件
+ * 4. 注入 JSON-LD 结构化数据
+ */
+
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "./BaseLayout.astro";
+import JsonLD from "@/components/JsonLD.astro";
+import Donate from "@/components/Donate.astro";
+import { generateBlogPostSchema } from "@/config/seo.config";
+import formatDate from "@/utils/formatDate";
+
+export interface Props {
+  post: CollectionEntry<"blog">;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDatetime, modDatetime, author, tags, image, ogImage } = post.data;
+
+// 生成文章 URL
+const postURL = new URL(Astro.url.pathname, Astro.site).href;
+
+// 生成 JSON-LD Schema
+const schema = generateBlogPostSchema({
+  title,
+  description,
+  pubDatetime,
+  modDatetime,
+  author,
+  image: ogImage || image?.src,
+  url: postURL,
+});
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  image={ogImage || image?.src}
+  article={true}
+  pubDatetime={pubDatetime}
+  modDatetime={modDatetime}
+  author={author}
+  tags={tags}
+>
+  <!-- JSON-LD 结构化数据 -->
+  <JsonLD schema={schema} slot="head" />
+
+  <article class="post-article">
+    <div class="post-container">
+      <!-- 文章头部 -->
+      <header class="post-header">
+        <h1 class="post-title">{title}</h1>
+
+        <div class="post-meta">
+          <div class="post-meta-item">
+            <svg class="post-meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+            <span>{author}</span>
+          </div>
+
+          <div class="post-meta-item">
+            <svg class="post-meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              ></path>
+            </svg>
+            <time datetime={pubDatetime.toISOString()}>
+              {formatDate(pubDatetime)}
+            </time>
+          </div>
+
+          {
+            modDatetime && modDatetime > pubDatetime && (
+              <div class="post-meta-item">
+                <svg class="post-meta-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
+                <time datetime={modDatetime.toISOString()}>更新于 {formatDate(modDatetime)}</time>
+              </div>
+            )
+          }
+        </div>
+
+        <!-- 标签 -->
+        {
+          tags && tags.length > 0 && (
+            <div class="post-tags">
+              {tags.map((tag) => (
+                <a href={`/tags/${tag}`} class="post-tag">
+                  #{tag}
+                </a>
+              ))}
+            </div>
+          )
+        }
+      </header>
+
+      <!-- 文章内容 -->
+      <div class="post-content prose">
+        <slot />
+      </div>
+
+      <!-- 打赏组件 - 自动插入到文章底部 -->
+      <div class="post-donate">
+        <Donate />
+      </div>
+
+      <!-- 文章底部信息 -->
+      <footer class="post-footer">
+        <p class="post-footer-text">
+          本文由 <strong>{author}</strong> 创作，采用
+          <a
+            href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议
+          </a>
+          进行许可。
+        </p>
+      </footer>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post-article {
+    padding: 2rem 0;
+  }
+
+  .post-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  /* 文章头部 */
+  .post-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgb(var(--color-border));
+  }
+
+  .post-title {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    color: rgb(var(--color-text-base));
+  }
+
+  @media (max-width: 768px) {
+    .post-title {
+      font-size: 2rem;
+    }
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    color: rgb(var(--color-text-base) / 0.7);
+    font-size: 0.875rem;
+  }
+
+  .post-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .post-meta-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  /* 标签 */
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .post-tag {
+    padding: 0.25rem 0.75rem;
+    background: rgb(var(--color-fill));
+    border-radius: 9999px;
+    color: rgb(var(--color-accent));
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .post-tag:hover {
+    background: rgb(var(--color-accent));
+    color: white;
+  }
+
+  /* 文章内容 */
+  .post-content {
+    margin-bottom: 3rem;
+    line-height: 1.8;
+    font-size: 1.0625rem;
+  }
+
+  .post-content :global(h2),
+  .post-content :global(h3),
+  .post-content :global(h4) {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    scroll-margin-top: 5rem;
+  }
+
+  .post-content :global(h2) {
+    font-size: 1.875rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgb(var(--color-border));
+  }
+
+  .post-content :global(h3) {
+    font-size: 1.5rem;
+  }
+
+  .post-content :global(h4) {
+    font-size: 1.25rem;
+  }
+
+  .post-content :global(p) {
+    margin: 1.25rem 0;
+  }
+
+  .post-content :global(a) {
+    color: rgb(var(--color-accent));
+    text-decoration: none;
+  }
+
+  .post-content :global(a:hover) {
+    text-decoration: underline;
+  }
+
+  .post-content :global(ul),
+  .post-content :global(ol) {
+    margin: 1.25rem 0;
+    padding-left: 2rem;
+  }
+
+  .post-content :global(li) {
+    margin: 0.5rem 0;
+  }
+
+  .post-content :global(blockquote) {
+    margin: 1.5rem 0;
+    padding: 1rem 1.5rem;
+    border-left: 4px solid rgb(var(--color-accent));
+    background: rgb(var(--color-fill));
+    border-radius: 0 0.5rem 0.5rem 0;
+  }
+
+  .post-content :global(blockquote p) {
+    margin: 0.5rem 0;
+  }
+
+  .post-content :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 2rem auto;
+    display: block;
+  }
+
+  .post-content :global(pre) {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    overflow-x: auto;
+  }
+
+  .post-content :global(table) {
+    width: 100%;
+    margin: 1.5rem 0;
+    border-collapse: collapse;
+  }
+
+  .post-content :global(th),
+  .post-content :global(td) {
+    padding: 0.75rem;
+    border: 1px solid rgb(var(--color-border));
+  }
+
+  .post-content :global(th) {
+    background: rgb(var(--color-fill));
+    font-weight: 600;
+  }
+
+  /* 打赏区域 */
+  .post-donate {
+    margin: 3rem 0;
+    padding: 2rem 0;
+    border-top: 1px solid rgb(var(--color-border));
+    border-bottom: 1px solid rgb(var(--color-border));
+  }
+
+  /* 文章底部 */
+  .post-footer {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgb(var(--color-border));
+  }
+
+  .post-footer-text {
+    color: rgb(var(--color-text-base) / 0.7);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .post-footer-text a {
+    color: rgb(var(--color-accent));
+    text-decoration: none;
+  }
+
+  .post-footer-text a:hover {
+    text-decoration: underline;
+  }
+</style>

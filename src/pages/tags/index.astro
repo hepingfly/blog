@@ -1,0 +1,140 @@
+---
+/**
+ * 标签列表页
+ *
+ * 显示所有标签及其文章数量
+ */
+
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import getSortedPosts from "@/utils/getSortedPosts";
+
+// 获取所有文章
+const posts = await getCollection("blog");
+const sortedPosts = getSortedPosts(posts);
+
+// 统计标签
+const tagCounts = new Map<string, number>();
+sortedPosts.forEach((post) => {
+  post.data.tags.forEach((tag) => {
+    tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+  });
+});
+
+// 按文章数量排序
+const sortedTags = Array.from(tagCounts.entries()).sort((a, b) => b[1] - a[1]);
+---
+
+<BaseLayout title="标签" description="浏览所有文章标签">
+  <div class="tags-container">
+    <!-- 页面头部 -->
+    <header class="tags-header">
+      <h1 class="tags-title">标签</h1>
+      <p class="tags-description">共 {sortedTags.length} 个标签</p>
+    </header>
+
+    <!-- 标签云 -->
+    <div class="tags-cloud">
+      {
+        sortedTags.map(([tag, count]) => (
+          <a
+            href={`/tags/${tag}`}
+            class="tag-item"
+            style={`font-size: ${Math.min(1 + count * 0.2, 2.5)}rem;`}
+          >
+            <span class="tag-name">#{tag}</span>
+            <span class="tag-count">({count})</span>
+          </a>
+        ))
+      }
+    </div>
+
+    {
+      sortedTags.length === 0 && (
+        <div class="empty-state">
+          <p>暂无标签</p>
+        </div>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .tags-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  /* 页面头部 */
+  .tags-header {
+    padding: 3rem 0 2rem;
+    text-align: center;
+    border-bottom: 1px solid rgb(var(--color-border));
+    margin-bottom: 3rem;
+  }
+
+  .tags-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .tags-description {
+    font-size: 1.125rem;
+    color: rgb(var(--color-text-base) / 0.7);
+  }
+
+  /* 标签云 */
+  .tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+    padding: 2rem 0;
+  }
+
+  .tag-item {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: rgb(var(--color-text-base));
+    transition: all 0.3s ease;
+    background: rgb(var(--color-fill));
+  }
+
+  .tag-item:hover {
+    background: rgb(var(--color-accent));
+    color: white;
+    transform: scale(1.1);
+  }
+
+  .tag-name {
+    font-weight: 600;
+  }
+
+  .tag-count {
+    font-size: 0.875em;
+    opacity: 0.7;
+  }
+
+  /* 空状态 */
+  .empty-state {
+    padding: 4rem 0;
+    text-align: center;
+    color: rgb(var(--color-text-base) / 0.6);
+  }
+
+  @media (max-width: 768px) {
+    .tags-title {
+      font-size: 2rem;
+    }
+
+    .tags-cloud {
+      gap: 1rem;
+    }
+  }
+</style>

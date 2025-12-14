@@ -1,0 +1,94 @@
+---
+/**
+ * Footer 组件
+ *
+ * 包含：
+ * 1. 社交媒体链接
+ * 2. 版权信息
+ * 3. 友情链接（可选）
+ */
+
+import { SITE } from "@/config/site.config";
+import Socials from "@/components/Socials.astro";
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer-container">
+    <!-- 社交媒体链接 -->
+    <div class="footer-socials">
+      <Socials centered size="md" />
+    </div>
+
+    <!-- 版权信息 -->
+    <div class="footer-copyright">
+      <p>
+        &copy; {currentYear} {SITE.author}. All rights reserved.
+      </p>
+      <p class="footer-powered">
+        Powered by <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>
+      </p>
+    </div>
+
+    <!-- 备案信息（如需要） -->
+    <!-- <div class="footer-icp">
+      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
+        京ICP备xxxxxx号
+      </a>
+    </div> -->
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: auto;
+    border-top: 1px solid rgb(var(--color-border));
+    background: rgb(var(--color-bg-secondary));
+  }
+
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 1rem 2rem;
+  }
+
+  .footer-socials {
+    margin-bottom: 2rem;
+  }
+
+  .footer-copyright {
+    text-align: center;
+    color: rgb(var(--color-text-base) / 0.7);
+    font-size: 0.875rem;
+  }
+
+  .footer-copyright p {
+    margin: 0.25rem 0;
+  }
+
+  .footer-powered a {
+    color: rgb(var(--color-accent));
+    text-decoration: none;
+  }
+
+  .footer-powered a:hover {
+    text-decoration: underline;
+  }
+
+  .footer-icp {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: rgb(var(--color-text-base) / 0.6);
+  }
+
+  .footer-icp a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .footer-icp a:hover {
+    text-decoration: underline;
+  }
+</style>

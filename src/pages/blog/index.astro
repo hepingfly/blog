@@ -1,0 +1,231 @@
+---
+/**
+ * 博客列表页
+ *
+ * 功能：
+ * 1. 显示所有博客文章
+ * 2. 分页支持
+ * 3. 按时间倒序排列
+ */
+
+import { getCollection } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import JsonLD from "@/components/JsonLD.astro";
+import { SITE } from "@/config/site.config";
+import { generateBlogSchema } from "@/config/seo.config";
+import getSortedPosts from "@/utils/getSortedPosts";
+import formatDate from "@/utils/formatDate";
+
+// 获取所有文章
+const posts = await getCollection("blog");
+const sortedPosts = getSortedPosts(posts);
+
+// 生成 JSON-LD Schema
+const schema = generateBlogSchema();
+---
+
+<BaseLayout title={SITE.blogTitle} description={SITE.blogDescription}>
+  <JsonLD schema={schema} slot="head" />
+
+  <div class="blog-container">
+    <!-- 页面头部 -->
+    <header class="blog-header">
+      <h1 class="blog-title">{SITE.blogTitle}</h1>
+      <p class="blog-description">{SITE.blogDescription}</p>
+      <p class="blog-count">共 {sortedPosts.length} 篇文章</p>
+    </header>
+
+    <!-- 文章列表 -->
+    <div class="posts-list">
+      {
+        sortedPosts.map((post) => (
+          <article class="post-item">
+            <a href={`/blog/${post.slug}`} class="post-item-link">
+              <div class="post-item-content">
+                <h2 class="post-item-title">{post.data.title}</h2>
+                <p class="post-item-description">{post.data.description}</p>
+
+                <div class="post-item-meta">
+                  <time datetime={post.data.pubDatetime.toISOString()}>
+                    {formatDate(post.data.pubDatetime)}
+                  </time>
+
+                  {post.data.tags.length > 0 && (
+                    <div class="post-item-tags">
+                      {post.data.tags.slice(0, 3).map((tag) => (
+                        <span class="post-item-tag">#{tag}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {post.data.featured && (
+                <div class="post-item-badge">
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  <span>精选</span>
+                </div>
+              )}
+            </a>
+          </article>
+        ))
+      }
+    </div>
+
+    {
+      sortedPosts.length === 0 && (
+        <div class="empty-state">
+          <p>暂无文章</p>
+        </div>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .blog-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  /* 页面头部 */
+  .blog-header {
+    padding: 3rem 0 2rem;
+    text-align: center;
+    border-bottom: 1px solid rgb(var(--color-border));
+    margin-bottom: 3rem;
+  }
+
+  .blog-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .blog-description {
+    font-size: 1.125rem;
+    color: rgb(var(--color-text-base) / 0.7);
+    margin-bottom: 0.5rem;
+  }
+
+  .blog-count {
+    font-size: 0.875rem;
+    color: rgb(var(--color-text-base) / 0.6);
+  }
+
+  /* 文章列表 */
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .post-item {
+    position: relative;
+    padding: 1.5rem;
+    border: 1px solid rgb(var(--color-border));
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+    background: rgb(var(--color-bg));
+  }
+
+  .post-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: rgb(var(--color-accent));
+  }
+
+  .post-item-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .post-item-content {
+    padding-right: 3rem;
+  }
+
+  .post-item-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: rgb(var(--color-text-base));
+    transition: color 0.2s ease;
+  }
+
+  .post-item-link:hover .post-item-title {
+    color: rgb(var(--color-accent));
+  }
+
+  .post-item-description {
+    color: rgb(var(--color-text-base) / 0.7);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .post-item-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    font-size: 0.875rem;
+    color: rgb(var(--color-text-base) / 0.6);
+  }
+
+  .post-item-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .post-item-tag {
+    color: rgb(var(--color-accent));
+  }
+
+  /* 精选徽章 */
+  .post-item-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    background: rgb(var(--color-accent));
+    color: white;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .post-item-badge svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  /* 空状态 */
+  .empty-state {
+    padding: 4rem 0;
+    text-align: center;
+    color: rgb(var(--color-text-base) / 0.6);
+  }
+
+  @media (max-width: 768px) {
+    .blog-title {
+      font-size: 2rem;
+    }
+
+    .post-item-content {
+      padding-right: 0;
+    }
+
+    .post-item-badge {
+      position: static;
+      align-self: flex-start;
+      margin-bottom: 1rem;
+    }
+  }
+</style>
