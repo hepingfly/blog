@@ -317,6 +317,7 @@ const alipayQRCode = "/donate-qrcodes/alipay.png";
 
     // 打开 Modal
     function openModal() {
+      if (!modal) return;
       modal.classList.add("active");
       modal.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
@@ -324,6 +325,7 @@ const alipayQRCode = "/donate-qrcodes/alipay.png";
 
     // 关闭 Modal
     function closeModal() {
+      if (!modal) return;
       modal.classList.remove("active");
       modal.setAttribute("aria-hidden", "true");
       document.body.style.overflow = "";

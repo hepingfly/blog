@@ -31,7 +31,7 @@ const schema = generateBlogPostSchema({
   title,
   description,
   pubDatetime,
-  modDatetime,
+  modDatetime: modDatetime ?? undefined,
   author,
   image: ogImage || image?.src,
   url: postURL,
@@ -44,7 +44,7 @@ const schema = generateBlogPostSchema({
   image={ogImage || image?.src}
   article={true}
   pubDatetime={pubDatetime}
-  modDatetime={modDatetime}
+  modDatetime={modDatetime ?? undefined}
   author={author}
   tags={tags}
 >
