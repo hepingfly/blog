@@ -15,6 +15,7 @@ import { SITE } from "@/config/site.config";
 import { generateBlogSchema } from "@/config/seo.config";
 import getSortedPosts from "@/utils/getSortedPosts";
 import formatDate from "@/utils/formatDate";
+import getPath from "@/utils/getPath";
 
 // 获取所有文章
 const posts = await getCollection("blog");
@@ -40,7 +41,7 @@ const schema = generateBlogSchema();
       {
         sortedPosts.map((post) => (
           <article class="post-item">
-            <a href={`/blog/${post.slug}`} class="post-item-link">
+            <a href={getPath(`blog/${post.slug}`)} class="post-item-link">
               <div class="post-item-content">
                 <h2 class="post-item-title">{post.data.title}</h2>
                 <p class="post-item-description">{post.data.description}</p>

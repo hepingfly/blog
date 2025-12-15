@@ -8,6 +8,7 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import getSortedPosts from "@/utils/getSortedPosts";
+import getPath from "@/utils/getPath";
 
 // 获取所有文章
 const posts = await getCollection("blog");
@@ -37,8 +38,8 @@ const sortedTags = Array.from(tagCounts.entries()).sort((a, b) => b[1] - a[1]);
     <div class="tags-cloud">
       {
         sortedTags.map(([tag, count]) => (
-          <a
-            href={`/tags/${tag}`}
+            <a
+            href={getPath(`tags/${tag}`)}
             class="tag-item"
             style={`font-size: ${Math.min(1 + count * 0.2, 2.5)}rem;`}
           >

@@ -11,13 +11,15 @@
 
 import { SITE } from "@/config/site.config";
 
+import getPath from "@/utils/getPath";
+
 const currentPath = Astro.url.pathname;
 
 const navItems = [
-  { name: "首页", href: "/" },
-  { name: "博客", href: "/blog" },
-  { name: "标签", href: "/tags" },
-  { name: "关于", href: "/about" },
+  { name: "首页", href: getPath("/") },
+  { name: "博客", href: getPath("blog") },
+  { name: "标签", href: getPath("tags") },
+  { name: "关于", href: getPath("about") },
 ];
 ---
 
@@ -25,7 +27,7 @@ const navItems = [
   <div class="header-container">
     <div class="header-content">
       <!-- Logo / 网站标题 -->
-      <a href="/" class="logo" aria-label="回到首页">
+      <a href={getPath("/")} class="logo" aria-label="回到首页">
         <span class="logo-text">{SITE.title}</span>
       </a>
 

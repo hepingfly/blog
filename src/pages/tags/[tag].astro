@@ -10,6 +10,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import getPostsByTag from "@/utils/getPostsByTag";
 import getSortedPosts from "@/utils/getSortedPosts";
 import formatDate from "@/utils/formatDate";
+import getPath from "@/utils/getPath";
 
 // 生成所有标签的路径
 export async function getStaticPaths() {
@@ -39,7 +40,7 @@ const tagPosts = getPostsByTag(allPosts, tag);
   <div class="tag-page-container">
     <!-- 页面头部 -->
     <header class="tag-page-header">
-      <a href="/tags" class="back-link">
+      <a href={getPath("tags")} class="back-link">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             stroke-linecap="round"
@@ -61,7 +62,7 @@ const tagPosts = getPostsByTag(allPosts, tag);
       {
         tagPosts.map((post) => (
           <article class="post-item">
-            <a href={`/blog/${post.slug}`} class="post-item-link">
+            <a href={getPath(`blog/${post.slug}`)} class="post-item-link">
               <div class="post-item-content">
                 <h2 class="post-item-title">{post.data.title}</h2>
                 <p class="post-item-description">{post.data.description}</p>
