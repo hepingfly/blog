@@ -7,8 +7,9 @@ import remarkCollapse from "remark-collapse";
 
 // https://astro.build/config
 export default defineConfig({
-  // 网站配置 - 部署到自定义域名
-  site: "https://blog.hepingfly.com",
+  // 网站配置 - 部署到 GitHub Pages
+  site: "https://hepingfly.github.io",
+  base: "/blog",
 
   // Markdown 配置
   markdown: {
