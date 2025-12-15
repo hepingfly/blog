@@ -17,6 +17,7 @@ import { SITE } from "@/config/site.config";
 import { generateWebsiteSchema } from "@/config/seo.config";
 import getSortedPosts from "@/utils/getSortedPosts";
 import formatDate from "@/utils/formatDate";
+import getPath from "@/utils/getPath";
 
 // 获取所有文章
 const posts = await getCollection("blog");
@@ -51,8 +52,8 @@ const schema = generateWebsiteSchema();
       </div>
 
       <div class="hero-cta">
-        <a href="/blog" class="btn btn-primary">阅读文章</a>
-        <a href="/about" class="btn btn-secondary">关于我</a>
+        <a href={getPath("blog")} class="btn btn-primary">阅读文章</a>
+        <a href={getPath("about")} class="btn btn-secondary">关于我</a>
       </div>
     </section>
 
@@ -64,7 +65,7 @@ const schema = generateWebsiteSchema();
           <div class="posts-grid">
             {featuredPosts.slice(0, 3).map((post) => (
               <article class="post-card featured">
-                <a href={`/blog/${post.slug}`} class="post-card-link">
+                <a href={getPath(`blog/${post.slug}`)} class="post-card-link">
                   <div class="post-card-content">
                     <h3 class="post-card-title">{post.data.title}</h3>
                     <p class="post-card-description">{post.data.description}</p>
@@ -93,14 +94,14 @@ const schema = generateWebsiteSchema();
     <section class="section">
       <div class="section-header">
         <h2 class="section-title">最新文章</h2>
-        <a href="/blog" class="section-link">查看全部 →</a>
+        <a href={getPath("blog")} class="section-link">查看全部 →</a>
       </div>
 
       <div class="posts-list">
         {
           recentPosts.map((post) => (
             <article class="post-item">
-              <a href={`/blog/${post.slug}`} class="post-item-link">
+              <a href={getPath(`blog/${post.slug}`)} class="post-item-link">
                 <div class="post-item-content">
                   <h3 class="post-item-title">{post.data.title}</h3>
                   <p class="post-item-description">{post.data.description}</p>

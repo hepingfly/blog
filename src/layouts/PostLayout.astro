@@ -15,6 +15,7 @@ import JsonLD from "@/components/JsonLD.astro";
 import Donate from "@/components/Donate.astro";
 import { generateBlogPostSchema } from "@/config/seo.config";
 import formatDate from "@/utils/formatDate";
+import getPath from "@/utils/getPath";
 
 export interface Props {
   post: CollectionEntry<"blog">;
@@ -105,7 +106,7 @@ const schema = generateBlogPostSchema({
           tags && tags.length > 0 && (
             <div class="post-tags">
               {tags.map((tag) => (
-                <a href={`/tags/${tag}`} class="post-tag">
+                <a href={getPath(`tags/${tag}`)} class="post-tag">
                   #{tag}
                 </a>
               ))}
