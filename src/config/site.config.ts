@@ -6,10 +6,10 @@
 export const SITE = {
   // 网站基本信息
   website: "https://blog.hepingfly.com", // 替换为你的域名
-  author: "贺平飞", // 替换为你的名字
+  author: "hepingfly", // 替换为你的名字
   profile: "https://blog.hepingfly.com/", // 个人主页
   desc: "分享技术、思考与成长的个人博客", // 网站描述
-  title: "贺平飞的博客", // 网站标题
+  title: "hepingfly的博客", // 网站标题
   ogImage: "og-default.jpg", // 默认 OG 图片
 
   // 网站语言配置

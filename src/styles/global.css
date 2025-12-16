@@ -119,7 +119,7 @@
    * 选中文本样式
    */
   ::selection {
-    @apply bg-[rgb(var(--color-accent)/0.2)];
+    @apply bg-[rgb(var(--color-accent))] text-white;
   }
 }
 
