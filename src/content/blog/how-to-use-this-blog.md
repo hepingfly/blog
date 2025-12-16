@@ -3,7 +3,7 @@ title: "如何使用和定制这个博客"
 description: "详细介绍如何配置、定制和部署这个 Astro 博客的完整指南。"
 pubDatetime: 2024-01-02T00:00:00Z
 modDatetime: 2024-01-03T00:00:00Z
-author: "贺平飞"
+author: "hepingfly"
 tags: ["Astro", "教程", "博客"]
 categories: ["教程"]
 featured: true

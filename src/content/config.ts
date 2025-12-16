@@ -36,7 +36,7 @@ const blog = defineCollection({
       modDatetime: z.date().optional().nullable(),
 
       // 作者信息
-      author: z.string().default("贺平飞"), // 替换为你的名字
+      author: z.string().default("hepingfly"), // 替换为你的名字
 
       // 图片
       image: image()

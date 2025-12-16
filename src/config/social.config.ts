@@ -20,7 +20,7 @@ export type SocialPlatform = {
 };
 
 // 作者名称（用于配置引用）
-const SITE_AUTHOR = "贺平飞"; // 替换为你的名字
+const SITE_AUTHOR = "hepingfly"; // 替换为你的名字
 
 /**
  * 社交媒体配置列表

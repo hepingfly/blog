@@ -2,7 +2,7 @@
 title: "欢迎来到我的博客"
 description: "这是博客的第一篇文章，介绍博客的主要内容和特色功能。"
 pubDatetime: 2024-01-01T00:00:00Z
-author: "贺平飞"
+author: "hepingfly"
 tags: ["博客", "开始"]
 categories: ["公告"]
 featured: true
