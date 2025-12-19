@@ -28,6 +28,7 @@ const navItems = [
     <div class="header-content">
       <!-- Logo / 网站标题 -->
       <a href={getPath("/")} class="logo" aria-label="回到首页">
+        <img src={getPath("imgs/avata.PNG")} alt="头像" class="logo-avatar" />
         <span class="logo-text">{SITE.title}</span>
       </a>
 
@@ -150,15 +151,33 @@ const navItems = [
 
   /* Logo */
   .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     font-size: 1.25rem;
     font-weight: 700;
     color: rgb(var(--color-text-base));
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
   }
 
   .logo:hover {
     color: rgb(var(--color-accent));
+  }
+
+  .logo:hover .logo-avatar {
+    border-color: rgb(var(--color-accent));
+    transform: scale(1.05);
+  }
+
+  .logo-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: 2px solid rgb(var(--color-accent));
+    object-fit: cover;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(229, 57, 53, 0.2);
   }
 
   /* 导航 */
