@@ -13,6 +13,7 @@
 import SEO from "@/components/SEO.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
+import Loading from "@/components/Loading.astro";
 import "@/styles/global.css";
 
 export interface Props {
@@ -59,6 +60,7 @@ const {
     />
   </head>
   <body>
+    <Loading />
     <Header />
     <main class="main-content">
       <slot />
