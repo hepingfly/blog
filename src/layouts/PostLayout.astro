@@ -13,6 +13,7 @@ import type { CollectionEntry } from "astro:content";
 import BaseLayout from "./BaseLayout.astro";
 import JsonLD from "@/components/JsonLD.astro";
 import Donate from "@/components/Donate.astro";
+import TableOfContents from "@/components/TableOfContents.astro";
 import { generateBlogPostSchema } from "@/config/seo.config";
 import formatDate from "@/utils/formatDate";
 import getPath from "@/utils/getPath";
@@ -23,6 +24,9 @@ export interface Props {
 
 const { post } = Astro.props;
 const { title, description, pubDatetime, modDatetime, author, tags, image, ogImage } = post.data;
+
+// 获取文章标题用于生成目录
+const { headings } = await post.render();
 
 // 生成文章 URL
 const postURL = new URL(Astro.url.pathname, Astro.site).href;
@@ -141,6 +145,9 @@ const schema = generateBlogPostSchema({
       </footer>
     </div>
   </article>
+
+  <!-- 侧边目录 -->
+  <TableOfContents headings={headings} />
 </BaseLayout>
 
 <style>
