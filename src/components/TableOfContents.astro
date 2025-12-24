@@ -1,0 +1,110 @@
+---
+/**
+ * 侧边目录组件
+ * 从文章内容中提取标题,生成固定侧边栏目录
+ */
+
+export interface Props {
+  headings: { depth: number; text: string; slug: string }[];
+}
+
+const { headings } = Astro.props;
+
+// 只显示 h2 和 h3 级别的标题
+const filteredHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+---
+
+{
+  filteredHeadings.length > 0 && (
+    <nav class="toc-sidebar">
+      <div class="toc-container">
+        <h2 class="toc-title">目录</h2>
+        <ul class="toc-list">
+          {filteredHeadings.map((heading) => (
+            <li class={`toc-item toc-depth-${heading.depth}`}>
+              <a href={`#${heading.slug}`} class="toc-link">
+                {heading.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </nav>
+  )
+}
+
+<style>
+  .toc-sidebar {
+    position: fixed;
+    top: 120px;
+    right: 2rem;
+    width: 250px;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    display: none;
+  }
+
+  @media (min-width: 1280px) {
+    .toc-sidebar {
+      display: block;
+    }
+  }
+
+  .toc-container {
+    padding: 1.5rem;
+    background: rgb(var(--color-bg-secondary));
+    border-radius: 0.75rem;
+    border: 1px solid rgb(var(--color-border));
+  }
+
+  .toc-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: rgb(var(--color-text-base));
+  }
+
+  .toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .toc-item {
+    margin: 0.5rem 0;
+  }
+
+  .toc-depth-2 {
+    padding-left: 0;
+  }
+
+  .toc-depth-3 {
+    padding-left: 1rem;
+  }
+
+  .toc-link {
+    display: block;
+    font-size: 0.875rem;
+    color: rgb(var(--color-text-base) / 0.7);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    padding: 0.25rem 0;
+    border-left: 2px solid transparent;
+    padding-left: 0.75rem;
+  }
+
+  .toc-link:hover {
+    color: rgb(var(--color-accent));
+    border-left-color: rgb(var(--color-accent));
+  }
+
+  /* 滚动条样式 */
+  .toc-sidebar::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .toc-sidebar::-webkit-scrollbar-thumb {
+    background: rgb(var(--color-border));
+    border-radius: 2px;
+  }
+</style>

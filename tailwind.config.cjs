@@ -20,6 +20,13 @@ module.exports = {
             code: {
               color: false,
             },
+            // 移除 code 标签的反引号装饰
+            'code::before': {
+              content: '""',
+            },
+            'code::after': {
+              content: '""',
+            },
           },
         },
       },
