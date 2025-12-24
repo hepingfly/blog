@@ -4,6 +4,7 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
+import remarkGfm from "remark-gfm";
 
 // https://astro.build/config
 export default defineConfig({
@@ -14,6 +15,7 @@ export default defineConfig({
   // Markdown 配置
   markdown: {
     remarkPlugins: [
+      remarkGfm, // GitHub Flavored Markdown 支持
       remarkToc,
       [
         remarkCollapse,
