@@ -38,10 +38,13 @@ const filteredHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
     position: fixed;
     top: 120px;
     right: 2rem;
-    width: 250px;
-    max-height: calc(100vh - 140px);
+    width: 220px;
+    max-height: 400px;
     overflow-y: auto;
     display: none;
+    background: rgb(var(--color-bg-secondary));
+    border-radius: 0.75rem;
+    border: 1px solid rgb(var(--color-border));
   }
 
   @media (min-width: 1280px) {
@@ -51,10 +54,7 @@ const filteredHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
   }
 
   .toc-container {
-    padding: 1.5rem;
-    background: rgb(var(--color-bg-secondary));
-    border-radius: 0.75rem;
-    border: 1px solid rgb(var(--color-border));
+    padding: 1rem 1.25rem;
   }
 
   .toc-title {
@@ -71,7 +71,7 @@ const filteredHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
   }
 
   .toc-item {
-    margin: 0.5rem 0;
+    margin: 0.35rem 0;
   }
 
   .toc-depth-2 {
@@ -84,11 +84,11 @@ const filteredHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 
   .toc-link {
     display: block;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: rgb(var(--color-text-base) / 0.7);
     text-decoration: none;
     transition: all 0.2s ease;
-    padding: 0.25rem 0;
+    padding: 0.2rem 0;
     border-left: 2px solid transparent;
     padding-left: 0.75rem;
   }
