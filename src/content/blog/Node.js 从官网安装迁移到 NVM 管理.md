@@ -8,7 +8,8 @@ categories: ["编程"]
 featured: false
 draft: false
 ---
-# Node.js 从官网安装迁移到 NVM 管理 
+
+# Node.js 从官网安装迁移到 NVM 管理
 
 ## 背景与问题
 
@@ -34,11 +35,9 @@ npm error Error: EACCES: permission denied
 
 **说人话：**
 
-**1）你的 `~/.npm` 缓存目录里有“属于 root 用户的文件”，这是 **以前某次你用 sudo 跑 npm 或 **老版本 npm 的 bug** 留下的。npm 官方都承认这是历史遗留问题
-2）当前你是用**普通用户（hepingfly）**在跑 `npm / npx`
-**3）npm 没权限删这些 root 的文件，于是直接崩了**
-
-
+1）你的 `~/.npm` 缓存目录里有"属于 root 用户的文件",这是以前某次你用 sudo 跑 npm 或老版本 npm 的 bug 留下的。npm 官方都承认这是历史遗留问题
+2）当前你是用普通用户(hepingfly)在跑 `npm` / `npx`
+3）npm 没权限删这些 root 的文件,于是直接崩了
 
 ### 为什么会出现这种情况？（99% 命中）
 
@@ -51,10 +50,8 @@ npm error Error: EACCES: permission denied
 
 一旦用 sudo 跑过 npm：
 
-- `~/.npm` 里就会混入 **root 文件**
-- 之后你再用普通用户跑 npm → **必炸**
-
-
+- `~/.npm` 里就会混入 root 文件
+- 之后你再用普通用户跑 npm → 必炸
 
 ### 临时解决方案的局限
 
@@ -73,8 +70,6 @@ sudo chown -R $(whoami) /usr/local/lib/node_modules
 3. 无法实现多版本 Node 共存
 4. 卸载困难，容易留下垃圾文件
 
-
-
 ## 为什么需要 NVM
 
 ### NVM 的核心优势
@@ -84,11 +79,9 @@ sudo chown -R $(whoami) /usr/local/lib/node_modules
 | 安装位置   | `/usr/local/bin/` | `~/.nvm/versions/` |
 | 权限要求   | 需要 sudo         | 不需要 sudo        |
 | 版本切换   | 需要重装          | `nvm use` 即可     |
-| 多版本共存 | ❌ 不支持          | ✅ 支持             |
+| 多版本共存 | ❌ 不支持         | ✅ 支持            |
 | 卸载方式   | 需要手动清理多处  | 删除 `~/.nvm` 即可 |
 | 全局包管理 | 混在系统目录      | 每个版本独立管理   |
-
-
 
 ### NVM 工作原理
 
@@ -108,18 +101,16 @@ sudo chown -R $(whoami) /usr/local/lib/node_modules
 export PATH="$HOME/.nvm/versions/node/v22.20.0/bin:$PATH"
 ```
 
-
-
 ## 迁移前的准备工作
 
 ### Step 0: 环境信息收集
 
-~~~bash
+```bash
 # 1. 当前 Node 版本
 node -v
 # 输出: v22.20.0
 
-# 2. 当前 npm 版本  
+# 2. 当前 npm 版本
 npm -v
 # 输出: 10.9.3
 
@@ -140,11 +131,13 @@ npm list -g --depth=0
 ```
 
 **📝 重要提示：**
+
 - 将 `npm list -g --depth=0` 的输出保存下来
 - 迁移后需要根据这个列表重新安装全局包
 - 可以截图或复制到文本文件
 
 ### 环境信息示例
+
 ```
 Node: v22.20.0
 npm: 10.9.3
@@ -161,9 +154,7 @@ Shell: /bin/zsh
   npm@10.9.3
   pnpm@10.6.5
   typescript@5.8.3
-~~~
-
-
+```
 
 ## 详细迁移步骤
 
@@ -176,11 +167,7 @@ Shell: /bin/zsh
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 ```
 
-
-
 ### Step 2: 激活 NVM
-
-bash
 
 ```bash
 # 重新加载 shell 配置
@@ -190,8 +177,6 @@ source ~/.zshrc
 nvm --version
 # 输出: 0.40.3
 ```
-
-
 
 **⚠️ 注意事项：**
 
@@ -204,13 +189,9 @@ nvm --version
 
 - 如果没有，手动添加后再次 `source ~/.zshrc`
 
-
-
 ### Step 3: 用 NVM 安装 Node
 
-bash
-
-~~~bash
+```bash
 # 安装和旧版本相同的 Node（本例：22.20.0）
 nvm install 22.20.0
 
@@ -222,15 +203,14 @@ nvm alias default 22.20.0
 ```
 
 **预期输出：**
+
 ```
 Downloading and installing node v22.20.0...
 Computing checksum with sha256sum
 Checksums matched!
 Now using node v22.20.0 (npm v10.9.3)
 Creating default alias: default -> 22.20.0 (-> v22.20.0)
-~~~
-
-
+```
 
 ### Step 4: 验证切换成功
 
@@ -252,8 +232,6 @@ npm -v    # 10.9.3
 
 - `which node` 指向 `~/.nvm/versions/...`
 - 如果还是 `/usr/local/bin/node`，说明配置未生效，需要重新 `source ~/.zshrc`
-
-
 
 ### Step 5: 重装全局包
 
@@ -322,13 +300,9 @@ npm error File exists: /Users/xxx/.nvm/versions/node/v22.20.0/bin/pnpm
 npm i -g pnpm@10.6.5 --force
 ```
 
-
-
 ### Step 6: 验证项目兼容性
 
 **测试 npm 项目：**
-
-bash
 
 ```bash
 cd ~/你的项目目录
@@ -344,8 +318,6 @@ npm install
 
 **测试 pnpm 项目：**
 
-bash
-
 ```bash
 cd ~/你的pnpm项目
 
@@ -360,8 +332,6 @@ pnpm install
 - 有 `pnpm-lock.yaml` → 用 `pnpm install`
 - 有 `package-lock.json` → 用 `npm install`
 - 有 `yarn.lock` → 用 `yarn install`
-
-
 
 ### Step 7: 验证 VSCode（可选但推荐）
 
@@ -387,8 +357,6 @@ v22.20.0
 - 重启 VSCode
 - 或在 VSCode 设置中指定 Node 路径
 
-
-
 ### Step 8: 清理旧 Node 文件
 
 **⚠️ 重要提示：确认 Step 6、7 都通过后再执行此步骤！**
@@ -405,21 +373,15 @@ ls /usr/local/bin/node
 # 预期输出: No such file or directory
 ```
 
-
-
 ### Step 9: 清理残留软链接
 
 **检查残留：**
-
-bash
 
 ```bash
 ls -la /usr/local/bin/ | grep node
 ```
 
 **如果有输出，说明还有软链接残留，需要清理：**
-
-bash
 
 ```bash
 cd /usr/local/bin
@@ -435,18 +397,14 @@ ls -la /usr/local/bin/ | grep node
 
 **或者一键清理所有失效软链接：**
 
-bash
-
 ```bash
 # 找出并删除所有指向 node_modules 的软链接
 sudo find /usr/local/bin -type l -exec sh -c 'readlink "$1" | grep -q node_modules' sh {} \; -delete
 ```
 
-------
+---
 
 ### Step 10: 最终验证
-
-bash
 
 ```bash
 # 1. 验证命令路径
@@ -471,8 +429,6 @@ ls -la /usr/local/bin/ | grep node  # 应该没有输出
 ```
 
 **✅ 全部通过即迁移成功！**
-
-
 
 ## 常见问题与解决方案
 
@@ -506,8 +462,6 @@ source ~/.zshrc
 nvm --version
 ```
 
-
-
 ### Q2: 删除旧 Node 后 `node` 命令找不到
 
 **症状：**
@@ -535,8 +489,6 @@ which node
 # 应该输出: ~/.nvm/versions/node/v22.20.0/bin/node
 ```
 
-
-
 ### Q3: VSCode 终端还在用旧 Node
 
 **症状：**
@@ -561,13 +513,9 @@ which node
 source ~/.zshrc
 ```
 
-
-
 ### Q4: npm install 时出现权限错误
 
 **症状：**
-
-
 
 ```bash
 npm install
@@ -579,11 +527,7 @@ npm error Your cache folder contains root-owned files
 
 - npm 缓存目录 `~/.npm` 有 root 权限的文件
 
-
-
 **解决方案：**
-
-
 
 ```bash
 # 修复缓存目录权限
@@ -596,13 +540,9 @@ npm cache clean --force
 npm install
 ```
 
-
-
 ### Q5: pnpm 项目用 npm install 报错
 
 **症状：**
-
-
 
 ```bash
 npm install
@@ -615,8 +555,6 @@ npm error Cannot read properties of null (reading 'edgesOut')
 - 但你用了 `npm install`
 
 **解决方案：**
-
-
 
 ```bash
 # 检查项目的锁文件
